@@ -7,4 +7,26 @@ spec:
     spec:
       containers:
         - name: wrappedup-backend
-          image: ghcr.io/guillermorivero/wrappedup-backend:prod 
+          image: ghcr.io/guillermorivero/wrappedup-backend:prod
+          env:
+            - name: CORS_ALLOWED_ORIGINS
+              value: "https://wrappedup.duckdns.org,http://wrappedup.duckdns.org"
+            - name: CORS_ALLOWED_METHODS
+              value: "GET,POST,PUT,DELETE,OPTIONS,PATCH,HEAD"
+            - name: CORS_ALLOWED_HEADERS
+              value: "Authorization,Content-Type,Accept,Origin,X-Requested-With,Access-Control-Request-Method,Access-Control-Request-Headers"
+            - name: CORS_EXPOSED_HEADERS
+              value: "Authorization,Content-Type,Accept,Origin,Access-Control-Allow-Origin,Access-Control-Allow-Credentials"
+            - name: CORS_MAX_AGE
+              value: "7200"
+            # Spring WebFlux/Web CORS configs for backward compatibility
+            - name: "spring.webflux.cors.allowed-origins"
+              value: "https://wrappedup.duckdns.org"
+            - name: "spring.web.cors.allowed-origins"
+              value: "https://wrappedup.duckdns.org"
+            - name: "spring.web.cors.allowed-methods"
+              value: "GET,POST,PUT,DELETE,OPTIONS"
+            - name: "spring.web.cors.allowed-headers"
+              value: "Authorization,Content-Type,X-Requested-With,Accept"
+            - name: "spring.web.cors.allow-credentials"
+              value: "true" 

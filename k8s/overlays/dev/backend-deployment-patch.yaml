@@ -9,6 +9,17 @@ spec:
         - name: wrappedup-backend
           image: ghcr.io/guillermorivero/wrappedup-backend:dev
           env:
+            - name: CORS_ALLOWED_ORIGINS
+              value: "https://wrappedupdev.duckdns.org,http://wrappedupdev.duckdns.org,http://localhost:3000"
+            - name: CORS_ALLOWED_METHODS
+              value: "GET,POST,PUT,DELETE,OPTIONS,PATCH,HEAD"
+            - name: CORS_ALLOWED_HEADERS
+              value: "Authorization,Content-Type,Accept,Origin,X-Requested-With,Access-Control-Request-Method,Access-Control-Request-Headers"
+            - name: CORS_EXPOSED_HEADERS
+              value: "Authorization,Content-Type,Accept,Origin,Access-Control-Allow-Origin,Access-Control-Allow-Credentials"
+            - name: CORS_MAX_AGE
+              value: "7200"
+            # Keep the Spring WebFlux/Web CORS configs for backward compatibility 
             - name: "spring.webflux.cors.allowed-origins"
               value: "https://wrappedupdev.duckdns.org"
             - name: "spring.web.cors.allowed-origins" 
