@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wrappedup-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wrappedup-frontend
+  template:
+    metadata:
+      labels:
+        app: wrappedup-frontend
+    spec:
+      imagePullSecrets:
+        - name: github-registry-secret
+      containers:
+        - name: wrappedup-frontend
+          image: ghcr.io/guillermorivero/wrappedup-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: NEXT_PUBLIC_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: frontend-config
+                  key: api-url
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wrappedup-frontend-service
+spec:
+  selector:
+    app: wrappedup-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer 

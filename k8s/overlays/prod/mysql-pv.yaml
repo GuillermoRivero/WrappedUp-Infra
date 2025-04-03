@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv-prod
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  csi:
+    driver: blockvolume.csi.oraclecloud.com
+    fsType: ext4
+    # Update this with your actual volume OCID for production environment
+    volumeHandle: ocid1.volume.oc1.eu-madrid-1.abwwcljrwjpaott777wfzvedum3i4mdomr2mzpscohpvvixkyxyccj7oylwa 

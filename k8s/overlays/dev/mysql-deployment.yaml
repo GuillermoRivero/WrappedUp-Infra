@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-wrappedup
+  namespace: wrappedup-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-wrappedup
+  template:
+    metadata:
+      labels:
+        app: mysql-wrappedup
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: password
+        - name: MYSQL_DATABASE
+          value: wrappedup
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql
+      imagePullSecrets:
+      - name: github-registry-secret
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: mysql-wrappedup-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-wrappedup-service
+  namespace: wrappedup-dev
+spec:
+  selector:
+    app: mysql-wrappedup
+  ports:
+  - port: 3306
+    targetPort: 3306
+  type: ClusterIP 

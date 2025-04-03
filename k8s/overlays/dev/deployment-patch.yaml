@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wrappedup-frontend
+spec:
+  template:
+    spec:
+      containers:
+        - name: wrappedup-frontend
+          image: ghcr.io/guillermorivero/wrappedup-frontend:dev 

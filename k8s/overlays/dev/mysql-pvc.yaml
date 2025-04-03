@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-wrappedup-pvc
+  namespace: wrappedup-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  # Uncomment and specify a storageClassName if needed
+  # storageClassName: standard 

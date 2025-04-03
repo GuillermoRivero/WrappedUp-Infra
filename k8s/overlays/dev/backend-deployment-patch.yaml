@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wrappedup-backend
+spec:
+  template:
+    spec:
+      containers:
+        - name: wrappedup-backend
+          image: ghcr.io/guillermorivero/wrappedup-backend:dev
+          env:
+            - name: "spring.webflux.cors.allowed-origins"
+              value: "https://wrappedupdev.duckdns.org"
+            - name: "spring.web.cors.allowed-origins" 
+              value: "https://wrappedupdev.duckdns.org"
+            - name: "spring.web.cors.allowed-methods"
+              value: "GET,POST,PUT,DELETE,OPTIONS"
+            - name: "spring.web.cors.allowed-headers"
+              value: "Authorization,Content-Type,X-Requested-With,Accept"
+            - name: "spring.web.cors.allow-credentials"
+              value: "true"
+            - name: "jwt.expiration"
+              value: "86400000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wrappedup-backend-service
+spec:
+  type: LoadBalancer 

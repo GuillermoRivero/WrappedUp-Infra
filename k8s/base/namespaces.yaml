@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: wrappedup-dev
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: wrappedup-prod 

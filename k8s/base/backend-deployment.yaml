@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wrappedup-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wrappedup-backend
+  template:
+    metadata:
+      labels:
+        app: wrappedup-backend
+    spec:
+      imagePullSecrets:
+        - name: github-registry-secret
+      containers:
+        - name: wrappedup-backend
+          image: ghcr.io/guillermorivero/wrappedup-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-config
+                  key: spring-profile
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql-wrappedup-service:3306/wrappedup"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: password
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              value: "com.mysql.cj.jdbc.Driver"
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: "update"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wrappedup-backend-service
+spec:
+  selector:
+    app: wrappedup-backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP 
