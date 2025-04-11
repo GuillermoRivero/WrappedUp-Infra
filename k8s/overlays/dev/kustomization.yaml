@@ -14,4 +14,11 @@ patches:
   - path: configmap-patch.yaml
   - path: deployment-patch.yaml
   - path: backend-configmap-patch.yaml
-  - path: backend-deployment-patch.yaml 
+  - path: backend-deployment-patch.yaml
+  - target:
+      kind: Secret
+      name: sonarqube-db-credentials
+    patch: |-
+      - op: replace
+        path: /stringData/password
+        value: dev-sonarqube-password  # Replace with actual development password 

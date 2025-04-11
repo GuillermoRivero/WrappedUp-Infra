@@ -5,4 +5,9 @@ resources:
   - frontend-deployment.yaml
   - configmap.yaml
   - backend-deployment.yaml
-  - backend-configmap.yaml 
+  - backend-configmap.yaml
+  - sonarqube-deployment.yaml
+  - sonarqube-db-deployment.yaml
+  - sonarqube-service.yaml
+  - sonarqube-pvc.yaml
+  - sonarqube-ingress.yaml 

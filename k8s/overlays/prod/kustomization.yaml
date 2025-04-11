@@ -5,13 +5,16 @@ namespace: wrappedup-prod
 
 resources:
   - ../../base
-  - ingress.yaml
-  - mysql-deployment.yaml
-  - mysql-pvc.yaml
-  - mysql-pv.yaml
 
 patches:
   - path: configmap-patch.yaml
   - path: deployment-patch.yaml
   - path: backend-configmap-patch.yaml
-  - path: backend-deployment-patch.yaml 
+  - path: backend-deployment-patch.yaml
+  - target:
+      kind: Secret
+      name: sonarqube-db-credentials
+    patch: |-
+      - op: replace
+        path: /stringData/password
+        value: prod-sonarqube-password  # Replace with actual production password 
