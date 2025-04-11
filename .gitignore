@@ -29,3 +29,7 @@ terraform.rc
 # Ignore any local secrets
 *.pem
 *.key 
+
+# Version tracking files
+.build-version-dev
+.build-version-prod 

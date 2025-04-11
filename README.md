@@ -35,6 +35,7 @@ WrappedUp-Infra/
 ```bash
 kubectl create namespace wrappedup-dev
 kubectl create namespace wrappedup-prod
+kubectl create namespace wrappedup-infra
 ```
 
 2. Configure GitHub Container Registry secret in each namespace:
@@ -52,18 +53,71 @@ kubectl create secret docker-registry github-registry-secret \
   --namespace=wrappedup-prod
 ```
 
+3. Create SonarQube database credentials:
+```bash
+# Generate a random password and create the secret
+kubectl create secret generic sonarqube-db-credentials \
+  -n wrappedup-infra \
+  --from-literal=username=sonar \
+  --from-literal=password=$(openssl rand -base64 32)
+```
+
+Note: Make sure to save the generated password securely, as it will be needed for SonarQube database access.
+
 ## Build and Deploy
 
 The deployment process is split into two steps:
 
 1. Build and push Docker images:
 ```bash
-# Build for development
+# Build for development (auto-incremental version)
 ./scripts/build.sh dev
 
-# Build for production
+# Build for development with specific version
+./scripts/build.sh dev --version 1.0.0
+
+# Build for production (auto-incremental version)
 ./scripts/build.sh prod
+
+# Build for production with specific version
+./scripts/build.sh prod --version 1.0.0
+
+# Build specific components
+./scripts/build.sh dev --frontend
+./scripts/build.sh dev --backend
 ```
+
+The build script includes:
+- Automatic version incrementing for dev and prod environments
+- SonarQube code quality analysis for the backend
+- Environment-specific version tracking
+- Docker image tagging with versions and latest tags
+
+### Versioning System
+
+The build system uses a versioning scheme that:
+- Automatically increments versions for each environment
+- Maintains separate version counters for dev and prod
+- Appends `-dev` suffix to development versions
+- Supports manual version specification
+
+Version files:
+- `.build-version-dev`: Tracks development versions
+- `.build-version-prod`: Tracks production versions
+
+### SonarQube Integration
+
+The backend build process includes SonarQube analysis:
+1. Set your SonarQube token:
+```bash
+export SONAR_TOKEN=your_sonar_token
+```
+
+2. The analysis will run automatically during backend builds
+3. Results are available at https://wrappedup-sonarqube.duckdns.org
+4. Each analysis is tagged with:
+   - Version number
+   - Environment (dev/prod)
 
 2. Deploy to Kubernetes:
 ```bash
